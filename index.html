@@ -24,13 +24,20 @@
     </div>
 
     <div>
+      <h2>Herramientas</h2>
+      <button class="template-btn settings-btn" id="signatures-btn">
+        <strong>✍️ Firma digital</strong>Generador de firma para correo
+      </button>
+    </div>
+
+    <div>
       <h2>Configuración</h2>
       <button class="template-btn settings-btn" id="settings-btn">
         <strong>⚙️ Datos de la empresa</strong>Logo, Notion y contacto de RRHH
       </button>
     </div>
 
-    <p class="sidebar-footer">Generador interno de correos de onboarding. Los datos de empresa se guardan en este navegador.</p>
+    <p class="sidebar-footer">Generador interno de correos y firmas. Los datos de empresa se guardan en este navegador.</p>
   </aside>
 
   <!-- MAIN (contenido dinámico, ver app.js) -->
@@ -41,6 +48,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="templates.js"></script>
+<script src="signatures.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

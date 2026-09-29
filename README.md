@@ -2,18 +2,22 @@
 
 Sitio estático (sin backend) que guarda las 5 plantillas de correo del proceso de onboarding y permite personalizarlas por persona antes de enviarlas.
 
-## Plantillas incluidas
-1. Bienvenida · Día 1
-2. Check-in · 7 días
-3. Aniversario · 6 meses
-4. Aniversario · 1 año
-5. Cumpleaños
+## Funcionalidades incluidas
+- **Plantillas de Onboarding y Aniversarios**:
+  1. Bienvenida · Día 1
+  2. Check-in · 7 días
+  3. Primer mes · 30 días
+  4. Aniversario · 6 meses
+  5. Aniversario · 1 año
+  6. Cumpleaños 🎂
+- **Herramientas**:
+  - **✍️ Firma Digital**: Generador de firma HTML corporativa alineada a la imagen institucional (con logo, datos de contacto y nota opcional de horarios flexibles).
 
 ## Cómo funciona
 - **Datos de la persona** (nombre, género, fecha, etc.): se llenan cada vez que generas un correo nuevo.
 - **Datos de la empresa** (logo, link de Notion, contacto RRHH): se llenan una vez y quedan guardados en el navegador (localStorage), no hace falta repetirlos en cada correo.
 - El campo **Género** ajusta automáticamente palabras como "Bienvenido/Bienvenida" en el texto.
-- Puedes **copiar el HTML** (para pegarlo directo en Gmail/Outlook como "Insertar HTML" o usarlo con un servicio de envío) o **descargar el archivo .html**.
+- Puedes **copiar la firma o correo HTML** (para pegarlo directo en Gmail/Outlook) o **descargar el archivo .html**.
 
 ## Cómo publicarlo en GitHub Pages
 
@@ -22,6 +26,7 @@ Sitio estático (sin backend) que guarda las 5 plantillas de correo del proceso 
    - `index.html`
    - `style.css`
    - `templates.js`
+   - `signatures.js`
    - `app.js`
    - `README.md`
 3. Ve a **Settings → Pages** del repositorio.

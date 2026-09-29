@@ -86,7 +86,10 @@ function buildSidebar() {
   });
 
   const settingsBtn = document.getElementById("settings-btn");
-  settingsBtn.classList.toggle("active", currentView === "settings");
+  if (settingsBtn) settingsBtn.classList.toggle("active", currentView === "settings");
+
+  const signaturesBtn = document.getElementById("signatures-btn");
+  if (signaturesBtn) signaturesBtn.classList.toggle("active", currentView === "signature");
 }
 
 // ------------------------------------------------------------
@@ -299,11 +302,164 @@ function buildSettingsView() {
 }
 
 // ------------------------------------------------------------
-// Router simple entre las dos vistas
+// Vista: Generador de Firma Digital
+// ------------------------------------------------------------
+function buildSignatureView() {
+  const main = document.getElementById("main-content");
+  main.innerHTML = `
+    <div class="topbar">
+      <div>
+        <h1>Generador de Firma Digital</h1>
+        <p>Crea tu firma institucional para Gmail o Outlook con el formato oficial de Fortalecernos.</p>
+      </div>
+    </div>
+    <div class="grid">
+      <section class="panel">
+        <h3>Datos de la firma</h3>
+        <div id="signature-form-container"></div>
+      </section>
+      <section class="panel preview-wrap">
+        <h3>Vista previa de la firma</h3>
+        <div class="preview-frame-holder signature-preview-box">
+          <div id="signature-preview-holder"></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btn-copy-rich-signature">📋 Copiar Firma (para Gmail/Outlook)</button>
+          <button class="btn btn-secondary" id="btn-copy-sig-html">📄 Copiar HTML</button>
+          <button class="btn btn-secondary" id="btn-download-sig-html">💾 Descargar .html</button>
+        </div>
+      </section>
+    </div>`;
+
+  const container = document.getElementById("signature-form-container");
+  let html = `<p class="section-label">Información Personal y Puesto</p>`;
+
+  SIGNATURE_FIELDS.forEach((f) => {
+    if (f.type === "toggle-text") {
+      html += `
+      <div class="field toggle-field">
+        <label class="toggle-label">
+          <input type="checkbox" id="f_${f.key}_on" data-sig-toggle-for="${f.key}" checked>
+          Incluir "${f.label}"
+        </label>
+        <input id="f_${f.key}" data-sig-key="${f.key}" type="text" placeholder="${f.placeholder || ''}" value="${escapeAttr(f.default || '')}">
+      </div>`;
+    } else {
+      html += `
+      <div class="field">
+        <label for="f_${f.key}">${f.label}</label>
+        <input id="f_${f.key}" data-sig-key="${f.key}" type="${f.type}" placeholder="${f.placeholder || ''}" value="${escapeAttr(f.default || '')}">
+      </div>`;
+    }
+  });
+
+  container.innerHTML = html;
+
+  // Listeners de inputs de la firma
+  container.querySelectorAll("input[data-sig-key]").forEach((el) => {
+    el.addEventListener("input", updateSignaturePreview);
+    el.addEventListener("change", updateSignaturePreview);
+  });
+
+  container.querySelectorAll("input[data-sig-toggle-for]").forEach((cb) => {
+    const key = cb.dataset.sigToggleFor;
+    cb.addEventListener("change", () => {
+      const input = document.getElementById(`f_${key}`);
+      if (input) {
+        input.disabled = !cb.checked;
+      }
+      updateSignaturePreview();
+    });
+  });
+
+  document.getElementById("btn-copy-rich-signature").onclick = copyRichSignature;
+  document.getElementById("btn-copy-sig-html").onclick = copySignatureHTML;
+  document.getElementById("btn-download-sig-html").onclick = downloadSignatureHTML;
+
+  updateSignaturePreview();
+}
+
+function collectSignatureData() {
+  const data = loadGlobalData(); // incluye logo_url
+  document.querySelectorAll("#signature-form-container input[data-sig-key]").forEach((el) => {
+    if (el.type === "checkbox") return;
+    const key = el.dataset.sigKey;
+    const toggleCb = document.getElementById(`f_${key}_on`);
+    if (toggleCb && !toggleCb.checked) {
+      data[key] = "";
+    } else {
+      data[key] = el.value;
+    }
+  });
+  return data;
+}
+
+function updateSignaturePreview() {
+  const data = collectSignatureData();
+  const sigHTML = generateSignatureHTML(data);
+  const holder = document.getElementById("signature-preview-holder");
+  if (holder) {
+    holder.innerHTML = sigHTML;
+  }
+  window._lastSigHTML = sigHTML;
+}
+
+function copyRichSignature() {
+  const html = window._lastSigHTML || "";
+  if (!html) return;
+
+  try {
+    const blobHtml = new Blob([html], { type: "text/html" });
+    const blobText = new Blob([extractPlainTextFromHTML(html)], { type: "text/plain" });
+    const data = [new ClipboardItem({ "text/html": blobHtml, "text/plain": blobText })];
+
+    navigator.clipboard.write(data).then(() => {
+      showToast("¡Firma copiada! Pégala directamente en Gmail u Outlook (Ctrl+V)");
+    }).catch(() => {
+      fallbackCopyHTML(html);
+    });
+  } catch (e) {
+    fallbackCopyHTML(html);
+  }
+}
+
+function extractPlainTextFromHTML(html) {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return tmp.innerText || tmp.textContent || "";
+}
+
+function fallbackCopyHTML(html) {
+  navigator.clipboard.writeText(html).then(() => {
+    showToast("Código HTML copiado al portapapeles");
+  });
+}
+
+function copySignatureHTML() {
+  navigator.clipboard.writeText(window._lastSigHTML || "").then(() => {
+    showToast("Código HTML de la firma copiado al portapapeles");
+  });
+}
+
+function downloadSignatureHTML() {
+  const blob = new Blob([window._lastSigHTML || ""], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `firma_fortalecernos.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Archivo firma_fortalecernos.html descargado");
+}
+
+// ------------------------------------------------------------
+// Router simple entre las vistas
 // ------------------------------------------------------------
 function renderView() {
   if (currentView === "settings") {
     buildSettingsView();
+  } else if (currentView === "signature") {
+    buildSignatureView();
   } else {
     buildTemplateView();
   }
@@ -313,16 +469,28 @@ function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
   t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2200);
+  setTimeout(() => t.classList.remove("show"), 2500);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   buildSidebar();
   renderView();
 
-  document.getElementById("settings-btn").onclick = () => {
-    currentView = "settings";
-    buildSidebar();
-    renderView();
-  };
+  const settingsBtn = document.getElementById("settings-btn");
+  if (settingsBtn) {
+    settingsBtn.onclick = () => {
+      currentView = "settings";
+      buildSidebar();
+      renderView();
+    };
+  }
+
+  const signaturesBtn = document.getElementById("signatures-btn");
+  if (signaturesBtn) {
+    signaturesBtn.onclick = () => {
+      currentView = "signature";
+      buildSidebar();
+      renderView();
+    };
+  }
 });

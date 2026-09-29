@@ -3,11 +3,11 @@
 // ============================================================
 
 const SIGNATURE_FIELDS = [
-  { key: "sig_nombre", label: "Nombre y Apellidos", type: "text", placeholder: "Ej. Ricardo Aguero", default: "Ricardo Aguero" },
-  { key: "sig_cargo", label: "Cargo / Puesto", type: "text", placeholder: "Ej. KAM Canal Masivo S2", default: "KAM Canal Masivo S2" },
-  { key: "sig_area", label: "Área / Gerencia / Sede", type: "text", placeholder: "Ej. Gerencia Regional Consumidores Sur", default: "Gerencia Regional Consumidores Sur" },
-  { key: "sig_celular", label: "Celular / WhatsApp", type: "text", placeholder: "Ej. 998 102 183", default: "998 102 183" },
-  { key: "sig_correo", label: "Correo electrónico", type: "text", placeholder: "Ej. ricardo.aguero@fortalecernos.com", default: "ricardo.aguero@fortalecernos.com" },
+  { key: "sig_nombre", label: "Nombre y Apellidos", type: "text", placeholder: "Ej. Keyner Valdivia", default: "Keyner Valdivia" },
+  { key: "sig_cargo", label: "Cargo / Puesto", type: "text", placeholder: "Ej. Asistente Administrativo", default: "Asistente Administrativo" },
+  { key: "sig_area", label: "Área / Gerencia / Sede", type: "text", placeholder: "Ej. Jirón Huanuco 117, Huanuco", default: "Jirón Huanuco 117, Huanuco" },
+  { key: "sig_celular", label: "Celular / WhatsApp", type: "text", placeholder: "Ej. 990 000 776", default: "990 000 776" },
+  { key: "sig_correo", label: "Correo electrónico", type: "text", placeholder: "Ej. keyner.valdivia@fortalecernos.com", default: "keyner.valdivia@fortalecernos.com" },
   { key: "sig_disclaimer", label: "Nota de Horarios Flexibles / Disclaimer", type: "toggle-text", placeholder: "Nuestros horarios son flexibles y mi día de trabajo puede ser distinto al tuyo, no te sientas obligad@ a responder este correo, si está fuera de tu horario laboral.", default: "Nuestros horarios son flexibles y mi día de trabajo puede ser distinto al tuyo, no te sientas obligad@ a responder este correo, si está fuera de tu horario laboral." }
 ];
 
